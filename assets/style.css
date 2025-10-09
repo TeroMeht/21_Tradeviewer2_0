@@ -1,0 +1,7 @@
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 charts per row */
+    grid-template-rows: repeat(3, auto);   /* 3 rows */
+    gap: 20px;                              /* spacing between charts */
+    padding: 10px;
+}
