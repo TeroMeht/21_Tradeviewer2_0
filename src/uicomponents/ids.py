@@ -1,4 +1,11 @@
-BAR_CHART = "bar-chart"
+DATA_TABLE = "data-table"
 
-NATION_DROPDOWN = "nation-dropdown"
-SELECT_ALL_NATIONS_BUTTON = "select-all-nations-button"
+SETUP_DROPDOWN = "setup-dropdown"
+RATING_DROPDOWN = "rating-dropdown"
+YEAR_DROPDOWN = "year-dropdown"
+MONTH_DROPDOWN = "month-dropdown"
+
+SELECT_ALL_TRADES_BUTTON = "select-all-trades-button"
+SELECT_ALL_RATINGS_BUTTON = "select-all-ratings-button"
+SELECT_ALL_YEARS_BUTTON = "select_all-years-button"
+SELECT_ALL_MONTHS_BUTTON = "select_all-months-button"

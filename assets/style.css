@@ -1,7 +1,13 @@
 .chart-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 charts per row */
-    grid-template-rows: repeat(3, auto);   /* 3 rows */
-    gap: 20px;                              /* spacing between charts */
-    padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 tables per row */
+  gap: 1rem;
+  padding: 1rem;
 }
+
+.dash-table-container {
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
