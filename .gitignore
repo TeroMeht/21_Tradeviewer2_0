@@ -1,1 +1,11 @@
-*.csv
+# Virtual environment
+.venv/
+
+# Database ini
+database.ini
+
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class

@@ -1,4 +1,5 @@
 import pandas as pd
+from src.data.db_functions import fetch_all_marketdata,fetch_all_trades
 
 # Schema for the trades file
 class TradeSchema:
@@ -25,57 +26,51 @@ class MarketDataSchema:
     TRADE_ID = "TradeId"
     RELATR = "Relatr"
 
-def load_trades(path: str) -> pd.DataFrame:
-    """Load and clean the trades dataset, replacing NULLs and extracting year/month."""
-    df = pd.read_csv(
-        path,
-        dtype={
-            TradeSchema.TRADE_ID: int,
-            TradeSchema.SYMBOL: str,
-            TradeSchema.SETUP: str,
-            TradeSchema.RATING: "Int64",  # nullable integer
-        },
-        parse_dates=[TradeSchema.DATE],
-    )
+def load_trades(database_config: dict, table_name: str) -> pd.DataFrame:
+    df = fetch_all_trades(database_config, table_name)
+    if df.empty:
+        return df
 
     # Ensure DATE column is datetime
-    df[TradeSchema.DATE] = pd.to_datetime(
-        df[TradeSchema.DATE], format="%Y-%m-%d", errors="coerce"
-    )
+    if TradeSchema.DATE in df.columns:
+        df[TradeSchema.DATE] = pd.to_datetime(df[TradeSchema.DATE], errors="coerce")
+        df = df.dropna(subset=[TradeSchema.DATE])
 
-    # Fill NULL ratings with 0
-    df[TradeSchema.RATING] = df[TradeSchema.RATING].fillna(0)
 
-    # Extract year and month as strings
+    # Extract year and month
     df[TradeSchema.YEAR] = df[TradeSchema.DATE].dt.year.astype(str)
     df[TradeSchema.MONTH] = df[TradeSchema.DATE].dt.month.astype(str)
 
     return df
 
-def load_market_data(path: str) -> pd.DataFrame:
-    """Load and clean the market data dataset."""
-    df = pd.read_csv(
-        path,
-        dtype={
-            MarketDataSchema.SYMBOL: str,
-            MarketDataSchema.DATE: str,
-            MarketDataSchema.TIME: str,
-            MarketDataSchema.OPEN: float,
-            MarketDataSchema.HIGH: float,
-            MarketDataSchema.LOW: float,
-            MarketDataSchema.CLOSE: float,
-            MarketDataSchema.VOLUME: int,
-            MarketDataSchema.VWAP: float,
-            MarketDataSchema.EMA9: float,
-            MarketDataSchema.TRADE_ID: int,
-            MarketDataSchema.RELATR: float,
-        },
-        parse_dates=[MarketDataSchema.DATE],
-    )
+def load_market_data(database_config: dict, table_name: str) -> pd.DataFrame:
+    """Load and clean the market data dataset from the database."""
+    df = fetch_all_marketdata(database_config, table_name)
+
+    if df.empty:
+        print(f"No data found in table '{table_name}'.")
+        return df
 
     # Ensure DATE is datetime
-    df[MarketDataSchema.DATE] = pd.to_datetime(
-        df[MarketDataSchema.DATE], format="%Y-%m-%d", errors="coerce"
-    )
+    if MarketDataSchema.DATE in df.columns:
+        df[MarketDataSchema.DATE] = pd.to_datetime(
+            df[MarketDataSchema.DATE], format="%Y-%m-%d", errors="coerce"
+        )
+
+    # Convert numeric columns
+    numeric_cols = [
+        MarketDataSchema.OPEN,
+        MarketDataSchema.HIGH,
+        MarketDataSchema.LOW,
+        MarketDataSchema.CLOSE,
+        MarketDataSchema.VOLUME,
+        MarketDataSchema.VWAP,
+        MarketDataSchema.EMA9,
+        MarketDataSchema.RELATR,
+    ]
+
+    for col in numeric_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
 
     return df
