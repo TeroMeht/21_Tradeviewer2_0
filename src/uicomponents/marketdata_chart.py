@@ -72,7 +72,7 @@ def create_plot_component(df_chunk: pd.DataFrame, plot_id: str) -> dcc.Graph:
         ), row=3, col=1)
 
         # Optional horizontal reference lines
-        for y_val in [0, 0.4, -0.4]:
+        for y_val in [0, 0.5, -0.5]:
             fig.add_shape(
                 type="line",
                 x0=x.min(),
